@@ -99,6 +99,7 @@
             [defaults synchronize];
         }
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:K_DEVICE_ADDED_NOTIFICATION object:nil userInfo:nil];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }

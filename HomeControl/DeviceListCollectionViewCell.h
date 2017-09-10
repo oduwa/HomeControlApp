@@ -14,4 +14,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *deviceImageView;
 @property (weak, nonatomic) IBOutlet UILabel *deviceTitleLabel;
 
+@property (assign, nonatomic) BOOL isAddCell;
+
 @end

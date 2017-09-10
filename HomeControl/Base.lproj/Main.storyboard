@@ -50,12 +50,12 @@
                                             <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus_math.png" translatesAutoresizingMaskIntoConstraints="NO" id="adW-zw-Adk">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus_math.png" translatesAutoresizingMaskIntoConstraints="NO" id="adW-zw-Adk">
                                                     <rect key="frame" x="28" y="38" width="145" height="124"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0eA-6i-rrY">
-                                                    <rect key="frame" x="8" y="171" width="184" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="8" y="175" width="184" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.69411764705882351" blue="0.41568627450980389" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -105,11 +105,91 @@
                     <connections>
                         <outlet property="collectionView" destination="LHJ-yj-6Oa" id="5ib-SV-MgN"/>
                         <outlet property="segmentedControl" destination="Bif-dJ-eeg" id="pNa-FR-xO9"/>
+                        <segue destination="niK-HG-Igu" kind="show" id="9Qt-71-NOL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="956" y="225"/>
+        </scene>
+        <!--Light Control View Controller-->
+        <scene sceneID="Wh6-2N-ue3">
+            <objects>
+                <viewController storyboardIdentifier="LightControlViewController" id="niK-HG-Igu" customClass="LightControlViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="JmV-Un-KqC"/>
+                        <viewControllerLayoutGuide type="bottom" id="T4F-YP-X4O"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="zcT-yW-W73">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ghG-EV-FEp">
+                                <rect key="frame" x="163" y="119" width="51" height="31"/>
+                            </switch>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ebC-xB-H0P" customClass="ChromaColorPicker" customModule="ChromaColorPicker">
+                                <rect key="frame" x="67" y="213" width="240" height="240"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bA3-BE-ZFY" customClass="StepSlider">
+                                <rect key="frame" x="67.5" y="530" width="240" height="44"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="maxCount">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="index">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="trackHeight">
+                                        <real key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="trackCircleRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="sliderCircleRadius">
+                                        <real key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="trackColor">
+                                        <color key="value" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="sliderCircleColor">
+                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="light_on.png" translatesAutoresizingMaskIntoConstraints="NO" id="TNo-1F-i29">
+                                <rect key="frame" x="37" y="541" width="22" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="6qm-Jd-eZW"/>
+                                    <constraint firstAttribute="width" constant="22" id="kPE-h0-iVH"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.062745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="TNo-1F-i29" firstAttribute="top" secondItem="JmV-Un-KqC" secondAttribute="bottom" constant="477" id="32c-kQ-x1C"/>
+                            <constraint firstItem="TNo-1F-i29" firstAttribute="leading" secondItem="zcT-yW-W73" secondAttribute="leadingMargin" constant="21" id="5iz-0e-O7c"/>
+                            <constraint firstItem="bA3-BE-ZFY" firstAttribute="centerX" secondItem="zcT-yW-W73" secondAttribute="centerX" id="Hat-4b-ub7"/>
+                            <constraint firstItem="ghG-EV-FEp" firstAttribute="centerX" secondItem="zcT-yW-W73" secondAttribute="centerX" id="HvM-Fl-MSr"/>
+                            <constraint firstItem="ghG-EV-FEp" firstAttribute="top" secondItem="JmV-Un-KqC" secondAttribute="bottom" constant="55" id="IJ8-pI-6rD"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="bA3-BE-ZFY" secondAttribute="trailing" constant="51.5" id="bQe-sf-2LI"/>
+                            <constraint firstItem="bA3-BE-ZFY" firstAttribute="top" secondItem="ebC-xB-H0P" secondAttribute="bottom" constant="77" id="d9R-bx-LXf"/>
+                            <constraint firstItem="ebC-xB-H0P" firstAttribute="top" secondItem="ghG-EV-FEp" secondAttribute="bottom" constant="63" id="ePv-te-sFq"/>
+                            <constraint firstItem="bA3-BE-ZFY" firstAttribute="leading" secondItem="TNo-1F-i29" secondAttribute="trailing" constant="8.5" id="f6S-aF-stQ"/>
+                            <constraint firstItem="ebC-xB-H0P" firstAttribute="centerY" secondItem="zcT-yW-W73" secondAttribute="centerY" id="f7B-7t-ApF"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ebC-xB-H0P" secondAttribute="trailing" constant="52" id="nrm-fq-DHl"/>
+                            <constraint firstItem="ebC-xB-H0P" firstAttribute="leading" secondItem="zcT-yW-W73" secondAttribute="leadingMargin" constant="51" id="v0c-Tz-Foh"/>
+                            <constraint firstItem="ebC-xB-H0P" firstAttribute="centerX" secondItem="zcT-yW-W73" secondAttribute="centerX" id="xSB-7C-TPw"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="colorPicker" destination="ebC-xB-H0P" id="nN3-0I-7ql"/>
+                        <outlet property="stepSlider" destination="bA3-BE-ZFY" id="GmL-d4-mD3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xDF-sY-oIT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1653.5999999999999" y="223.53823088455775"/>
         </scene>
         <!--Connection Select View Controller-->
         <scene sceneID="Z0e-mh-q0f">
@@ -172,10 +252,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Hk-xl-qFn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1644" y="224.4377811094453"/>
+            <point key="canvasLocation" x="956" y="878"/>
         </scene>
     </scenes>
     <resources>
+        <image name="light_on.png" width="37" height="37"/>
         <image name="plus_math.png" width="37" height="37"/>
     </resources>
 </document>

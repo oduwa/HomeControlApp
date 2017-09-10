@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>ChromaColorPicker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>MZAppearance.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -19,20 +24,35 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>StepSlider.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1DAC2FF166EBB39D93C76C245CCD170C</key>
+		<key>149A628C05DCB1495A501356A7145F85</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>34440D436B6519A357FFA66228EB4C96</key>
+		<key>6AB6A66AC662770439172D22119D2956</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6BCBCCC451AF6613CB5B7BD8BF5D4B21</key>
+		<key>9C21158A7B41D923AD9278EC173670D3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C305F07DEEDCB7E6651C401584DB4901</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FFABAFE9408FF95CFC8B3C3770D56837</key>
 		<dict>
 			<key>primary</key>
 			<true/>

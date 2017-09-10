@@ -10,6 +10,7 @@
 #import "DeviceListCollectionViewCell.h"
 #import "ConnectionSelectViewController.h"
 #import "MZFormSheetPresentationViewController.h"
+#import "LightControlViewController.h"
 #import "AppUtils.h"
 
 //#define LightServiceUUID @"1e0ca4ea-299d-4335-93eb-27fcfe7fa848"
@@ -39,9 +40,23 @@
     
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     services = @[[CBUUID UUIDWithString:LightServiceUUID_LOWER],[CBUUID UUIDWithString:LightServiceUUID_UPPER]];
-    //CBUUID *x = [CBUUID UUIDWithString:LightServiceUUID];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    [self fetchSavedDevices];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDeviceAddedNotification) name:K_DEVICE_ADDED_NOTIFICATION object:nil];
+}
+
+- (void) didReceiveDeviceAddedNotification
+{
+    [self fetchSavedDevices];
+}
+     
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -52,7 +67,6 @@
 // method called whenever you have successfully connected to the BLE peripheral
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    //[peripheral setDelegate:self];
     [peripheral discoverServices:nil];
     NSString *result = [NSString stringWithFormat:@"Connected: %@", peripheral.state == CBPeripheralStateConnected ? @"YES" : @"NO"];
     NSLog(@"%@", result);
@@ -68,8 +82,6 @@
         [self.connectionSelectVC addDiscoveredPeripheral:peripheral withLocalName:localName];
         // TODO: Dont stop scan. Discover all peripherals with required service for a specified time
         self.peripheral = peripheral;
-        //peripheral.delegate = self;
-        //[self.centralManager connectPeripheral:peripheral options:nil];
     }
 }
 
@@ -95,60 +107,18 @@
     }
 }
 
-//#pragma mark - CBPeripheralDelegate
-//
-//// CBPeripheralDelegate - Invoked when you discover the peripheral's available services.
-//- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
-//{
-//    for (CBService *service in peripheral.services) {
-//        NSLog(@"Discovered service: %@", service.UUID);
-//        [peripheral discoverCharacteristics:nil forService:service];
-//    }
-//}
-//
-//// Invoked when you discover the characteristics of a specified service.
-//- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
-//{
-//    if([self isUUIDInServiceList:service.UUID])  {
-//        for (CBCharacteristic *aChar in service.characteristics)
-//        {
-//            // Request device address
-//            if([self isUUIDInServiceList:aChar.UUID]) {
-//                [self.peripheral readValueForCharacteristic:aChar];
-//                NSLog(@"Found body sensor location characteristic");
-//            }
-//        }
-//    }
-//}
-//
-//// Invoked when you retrieve a specified characteristic's value, or when the peripheral device notifies your app that the characteristic's value has changed.
-//- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-//{
-//    // Updated value for heart rate measurement received
-//    if([self isUUIDInServiceList:characteristic.UUID]) { // 1
-//        // Get the device address
-//        NSString *addr = [self getDeviceAddressFromCharacteristic:characteristic];;
-//        NSLog(@"Found device ip address: %@", addr);
-//    }
-//}
 
 # pragma mark - Helper
 
-- (NSString *) getDeviceAddressFromCharacteristic:(CBCharacteristic *)characteristic
+- (void) fetchSavedDevices
 {
-    NSString *address = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];  // 1
-    return address;
-}
-
-- (BOOL) isUUIDInServiceList:(CBUUID *)uuid
-{
-    for(CBUUID *servUuid in services){
-        if([uuid isEqual:servUuid]){
-            return YES;
-        }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.savedDevices = [defaults arrayForKey:K_SAVED_DEVICE_STORE];
+    if(!self.savedDevices){
+        self.savedDevices = [NSMutableArray new];
     }
     
-    return NO;
+    [self.collectionView reloadData];
 }
 
 # pragma mark - UICollectionView DataSource
@@ -160,7 +130,12 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 2;
+    if([self.savedDevices count] == 0){
+        return [self.savedDevices count]+1+1;
+    }
+    else{
+        return [self.savedDevices count]+1;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -168,7 +143,36 @@
 {
     DeviceListCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addDeviceCell" forIndexPath:indexPath];
     
-    cell.deviceTitleLabel.text = @"hello";
+    if([self.savedDevices count] == 0){
+        if(indexPath.row == 0){
+            cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
+            cell.deviceTitleLabel.text = @"";
+            cell.isAddCell = YES;
+            cell.hidden = NO;
+        }
+        else{
+            cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
+            cell.deviceTitleLabel.text = @"";
+            cell.isAddCell = NO;
+            cell.hidden = YES;
+        }
+    }
+    else{
+        if(indexPath.row < [self.savedDevices count]){
+            NSDictionary *device = self.savedDevices[indexPath.row];
+            cell.deviceImageView.image = [UIImage imageNamed:@"light_on"];
+            cell.deviceTitleLabel.text = device[@"deviceServiceName"];
+            cell.isAddCell = NO;
+            cell.hidden = NO;
+        }
+        else{
+            cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
+            cell.deviceTitleLabel.text = @"";
+            cell.isAddCell = YES;
+            cell.hidden = NO;
+        }
+    }
+    
     
     return cell;
 }
@@ -179,32 +183,31 @@
 {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
-    if(isBluetoothOn){
-        [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    DeviceListCollectionViewCell *cell = [self collectionView:self.collectionView cellForItemAtIndexPath:indexPath];
+    
+    if(cell.isAddCell){
+        if(isBluetoothOn){
+            [self.centralManager scanForPeripheralsWithServices:services options:nil];
+        }
+        else{
+            [AppUtils showAlertWithTitle:@"HomeControl" body:@"An error occured. Please ensure that bluetooth is on" inViewController:self];
+        }
+        
+        self.connectionSelectVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ConnectionSelectViewController"];
+        self.connectionSelectVC.discoveredPeripherals = [NSMutableArray new];
+        self.connectionSelectVC.centralManager = self.centralManager;
+        MZFormSheetPresentationViewController *formSheetController = [[MZFormSheetPresentationViewController alloc] initWithContentViewController:self.connectionSelectVC];
+        formSheetController.presentationController.contentViewSize = CGSizeMake(250, 250); // or pass in UILayoutFittingCompressedSize to size automatically with auto-layout
+        formSheetController.presentationController.shouldDismissOnBackgroundViewTap = YES;
+        formSheetController.presentationController.shouldCenterVertically = YES;
+        formSheetController.presentationController.shouldApplyBackgroundBlurEffect = YES;
+        [self presentViewController:formSheetController animated:YES completion:nil];
     }
     else{
-        [AppUtils showAlertWithTitle:@"HomeControl" body:@"An error occured. Please ensure that bluetooth is on" inViewController:self];
+        LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
+        [self.navigationController pushViewController:lcvc animated:YES];
     }
-    
-    self.connectionSelectVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ConnectionSelectViewController"];
-    self.connectionSelectVC.discoveredPeripherals = [NSMutableArray new];
-    self.connectionSelectVC.centralManager = self.centralManager;
-    MZFormSheetPresentationViewController *formSheetController = [[MZFormSheetPresentationViewController alloc] initWithContentViewController:self.connectionSelectVC];
-    formSheetController.presentationController.contentViewSize = CGSizeMake(250, 250); // or pass in UILayoutFittingCompressedSize to size automatically with auto-layout
-    formSheetController.presentationController.shouldDismissOnBackgroundViewTap = YES;
-    formSheetController.presentationController.shouldCenterVertically = YES;
-    formSheetController.presentationController.shouldApplyBackgroundBlurEffect = YES;
-    [self presentViewController:formSheetController animated:YES completion:nil];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

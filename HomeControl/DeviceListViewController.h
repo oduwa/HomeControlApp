@@ -17,5 +17,6 @@
 
 @property (nonatomic, strong) CBCentralManager *centralManager;
 @property (nonatomic, strong) CBPeripheral *peripheral;
+@property (nonatomic, strong) NSArray *savedDevices;
 
 @end

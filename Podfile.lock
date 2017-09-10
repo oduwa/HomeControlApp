@@ -1,15 +1,21 @@
 PODS:
+  - ChromaColorPicker (1.5.1)
   - MZAppearance (1.1.6)
   - MZFormSheetPresentationController (2.4.2):
     - MZAppearance
+  - StepSlider (1.0.2)
 
 DEPENDENCIES:
+  - ChromaColorPicker
   - MZFormSheetPresentationController
+  - StepSlider
 
 SPEC CHECKSUMS:
+  ChromaColorPicker: cc7fc1d92569a8a9198fe89d9a420147e508462c
   MZAppearance: 0c06d3fa9cc55142f1da14bc8631fbe8fd6e19d5
   MZFormSheetPresentationController: c1dc3bce639d2393b3cc416fcb6e050eb5bca062
+  StepSlider: 67b0c59519e253df9de599043bc76397d68310b2
 
-PODFILE CHECKSUM: e73dbfe7a85b4e2bd5f25c57130640937e699492
+PODFILE CHECKSUM: bc7801eefe9543b35877a6d1326869d3d24b40e0
 
 COCOAPODS: 1.0.1

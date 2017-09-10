@@ -14,6 +14,7 @@
 @implementation AppUtils
 
 NSString *const K_SAVED_DEVICE_STORE = @"devices";
+NSString *const K_DEVICE_ADDED_NOTIFICATION = @"DEVICE_ADDED_NOTIFICATION";
 
 + (void) showAlertWithTitle:(NSString *)title
                        body:(NSString *)message

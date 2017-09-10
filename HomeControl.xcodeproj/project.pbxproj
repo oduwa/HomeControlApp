@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		4C506D851F64BF5F009ADB6F /* ConnectionSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C506D841F64BF5F009ADB6F /* ConnectionSelectViewController.m */; };
 		4C506D881F64C47A009ADB6F /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C506D871F64C47A009ADB6F /* AppUtils.m */; };
+		4C506D8C1F64D759009ADB6F /* light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C506D891F64D759009ADB6F /* light_on@2x.png */; };
+		4C506D8D1F64D759009ADB6F /* light_on@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C506D8A1F64D759009ADB6F /* light_on@3x.png */; };
+		4C506D8E1F64D759009ADB6F /* light_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C506D8B1F64D759009ADB6F /* light_on.png */; };
+		4C506D911F64E420009ADB6F /* LightControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C506D901F64E420009ADB6F /* LightControlViewController.m */; };
 		4CD4DDCA1F636468008EC271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD4DDC91F636468008EC271 /* main.m */; };
 		4CD4DDCD1F636468008EC271 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD4DDCC1F636468008EC271 /* AppDelegate.m */; };
 		4CD4DDD01F636468008EC271 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD4DDCF1F636468008EC271 /* ViewController.m */; };
@@ -23,17 +27,21 @@
 		4CD4DDF11F636F17008EC271 /* plus_math@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD4DDEE1F636F17008EC271 /* plus_math@3x.png */; };
 		4CD4DDF31F63702A008EC271 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD4DDF21F63702A008EC271 /* CoreBluetooth.framework */; };
 		4CD4DDF51F63714E008EC271 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD4DDF41F63714E008EC271 /* QuartzCore.framework */; };
-		D7BECA99730F0F0961428994 /* libPods-HomeControl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A33770505A5C260EC6AEF2D /* libPods-HomeControl.a */; };
+		5A674C6766A8A33C78FE526A /* Pods_HomeControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1ECABD65A54353FD2F6AB63 /* Pods_HomeControl.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A33770505A5C260EC6AEF2D /* libPods-HomeControl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HomeControl.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2235985ED8908FBAE5C0E95A /* Pods-HomeControl.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeControl.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeControl/Pods-HomeControl.release.xcconfig"; sourceTree = "<group>"; };
 		31DB89C6573C7B641421EFE3 /* Pods-HomeControl.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeControl.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeControl/Pods-HomeControl.debug.xcconfig"; sourceTree = "<group>"; };
 		4C506D831F64BF5F009ADB6F /* ConnectionSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionSelectViewController.h; sourceTree = "<group>"; };
 		4C506D841F64BF5F009ADB6F /* ConnectionSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionSelectViewController.m; sourceTree = "<group>"; };
 		4C506D861F64C47A009ADB6F /* AppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUtils.h; sourceTree = "<group>"; };
 		4C506D871F64C47A009ADB6F /* AppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUtils.m; sourceTree = "<group>"; };
+		4C506D891F64D759009ADB6F /* light_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "light_on@2x.png"; sourceTree = "<group>"; };
+		4C506D8A1F64D759009ADB6F /* light_on@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "light_on@3x.png"; sourceTree = "<group>"; };
+		4C506D8B1F64D759009ADB6F /* light_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = light_on.png; sourceTree = "<group>"; };
+		4C506D8F1F64E420009ADB6F /* LightControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightControlViewController.h; sourceTree = "<group>"; };
+		4C506D901F64E420009ADB6F /* LightControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightControlViewController.m; sourceTree = "<group>"; };
 		4CD4DDC51F636467008EC271 /* HomeControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CD4DDC91F636468008EC271 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4CD4DDCB1F636468008EC271 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -55,6 +63,7 @@
 		4CD4DDEE1F636F17008EC271 /* plus_math@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus_math@3x.png"; sourceTree = "<group>"; };
 		4CD4DDF21F63702A008EC271 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		4CD4DDF41F63714E008EC271 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F1ECABD65A54353FD2F6AB63 /* Pods_HomeControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +73,7 @@
 			files = (
 				4CD4DDF51F63714E008EC271 /* QuartzCore.framework in Frameworks */,
 				4CD4DDF31F63702A008EC271 /* CoreBluetooth.framework in Frameworks */,
-				D7BECA99730F0F0961428994 /* libPods-HomeControl.a in Frameworks */,
+				5A674C6766A8A33C78FE526A /* Pods_HomeControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +92,7 @@
 		3A4F9A87494E1CB0B6097A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1A33770505A5C260EC6AEF2D /* libPods-HomeControl.a */,
+				F1ECABD65A54353FD2F6AB63 /* Pods_HomeControl.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -130,6 +139,8 @@
 				4C506D841F64BF5F009ADB6F /* ConnectionSelectViewController.m */,
 				4C506D861F64C47A009ADB6F /* AppUtils.h */,
 				4C506D871F64C47A009ADB6F /* AppUtils.m */,
+				4C506D8F1F64E420009ADB6F /* LightControlViewController.h */,
+				4C506D901F64E420009ADB6F /* LightControlViewController.m */,
 			);
 			path = HomeControl;
 			sourceTree = "<group>";
@@ -154,6 +165,9 @@
 		4CD4DDEB1F636F17008EC271 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4C506D891F64D759009ADB6F /* light_on@2x.png */,
+				4C506D8A1F64D759009ADB6F /* light_on@3x.png */,
+				4C506D8B1F64D759009ADB6F /* light_on.png */,
 				4CD4DDEC1F636F17008EC271 /* plus_math.png */,
 				4CD4DDED1F636F17008EC271 /* plus_math@2x.png */,
 				4CD4DDEE1F636F17008EC271 /* plus_math@3x.png */,
@@ -223,9 +237,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CD4DDD81F636468008EC271 /* LaunchScreen.storyboard in Resources */,
+				4C506D8D1F64D759009ADB6F /* light_on@3x.png in Resources */,
+				4C506D8E1F64D759009ADB6F /* light_on.png in Resources */,
 				4CD4DDF01F636F17008EC271 /* plus_math@2x.png in Resources */,
 				4CD4DDEF1F636F17008EC271 /* plus_math.png in Resources */,
 				4CD4DDD51F636468008EC271 /* Assets.xcassets in Resources */,
+				4C506D8C1F64D759009ADB6F /* light_on@2x.png in Resources */,
 				4CD4DDD31F636468008EC271 /* Main.storyboard in Resources */,
 				4CD4DDF11F636F17008EC271 /* plus_math@3x.png in Resources */,
 			);
@@ -287,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C506D851F64BF5F009ADB6F /* ConnectionSelectViewController.m in Sources */,
+				4C506D911F64E420009ADB6F /* LightControlViewController.m in Sources */,
 				4CD4DDE51F63656B008EC271 /* DeviceListCollectionViewCell.m in Sources */,
 				4CD4DDE11F6364BD008EC271 /* DeviceListViewController.m in Sources */,
 				4CD4DDD01F636468008EC271 /* ViewController.m in Sources */,

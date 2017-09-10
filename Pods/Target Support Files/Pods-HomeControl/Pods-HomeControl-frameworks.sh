@@ -82,3 +82,16 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "$BUILT_PRODUCTS_DIR/ChromaColorPicker/ChromaColorPicker.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MZAppearance/MZAppearance.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MZFormSheetPresentationController/MZFormSheetPresentationController.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/StepSlider/StepSlider.framework"
+fi
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "$BUILT_PRODUCTS_DIR/ChromaColorPicker/ChromaColorPicker.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MZAppearance/MZAppearance.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MZFormSheetPresentationController/MZFormSheetPresentationController.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/StepSlider/StepSlider.framework"
+fi

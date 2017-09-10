@@ -20,6 +20,7 @@ typedef enum DeviceStoreStatusTypes
 @interface AppUtils : NSObject
 
 extern NSString *const K_SAVED_DEVICE_STORE;
+extern NSString *const K_DEVICE_ADDED_NOTIFICATION;
 
 + (void) showAlertWithTitle:(NSString *)title
                        body:(NSString *)message
