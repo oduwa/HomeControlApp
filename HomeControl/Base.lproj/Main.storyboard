@@ -40,7 +40,7 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LHJ-yj-6Oa">
                                 <rect key="frame" x="-4" y="108" width="383" height="559"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.16078431372549018" green="0.15294117647058825" blue="0.18431372549019609" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewLayout key="collectionViewLayout" id="l0Y-gx-vdn" customClass="DeviceListCollectionViewLayout"/>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="addDeviceCell" id="xrt-dO-uJh" customClass="DeviceListCollectionViewCell">
@@ -56,12 +56,12 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0eA-6i-rrY">
                                                     <rect key="frame" x="8" y="175" width="184" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <color key="textColor" red="0.0" green="0.69411764705882351" blue="0.41568627450980389" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" red="0.49411764705882355" green="0.97647058823529409" blue="0.5490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                         </view>
-                                        <color key="backgroundColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.062745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.1803921568627451" green="0.25098039215686274" blue="0.32156862745098036" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="adW-zw-Adk" firstAttribute="top" secondItem="xrt-dO-uJh" secondAttribute="topMargin" constant="30" id="SsD-Vs-wVS"/>
                                             <constraint firstItem="adW-zw-Adk" firstAttribute="centerY" secondItem="xrt-dO-uJh" secondAttribute="centerY" id="VUF-nb-J4T"/>
@@ -83,18 +83,21 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="tkM-cz-5jc"/>
                                 </connections>
                             </collectionView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Bif-dJ-eeg">
-                                <rect key="frame" x="127" y="72" width="121" height="29"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Bif-dJ-eeg">
+                                <rect key="frame" x="62" y="72" width="250" height="29"/>
                                 <segments>
                                     <segment title="Lights"/>
                                     <segment title="Audio"/>
                                 </segments>
+                                <color key="tintColor" red="0.49411764705882355" green="0.97647058823529409" blue="0.5490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </segmentedControl>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.16078431372549018" green="0.15294117647058825" blue="0.18431372549019609" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="LHJ-yj-6Oa" secondAttribute="bottom" id="KBP-5O-sNd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Bif-dJ-eeg" secondAttribute="trailing" constant="47" id="Onc-h9-QWG"/>
                             <constraint firstItem="Bif-dJ-eeg" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="SQ8-8m-DcM"/>
+                            <constraint firstItem="Bif-dJ-eeg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="46" id="WY7-NV-WRH"/>
                             <constraint firstAttribute="trailingMargin" secondItem="LHJ-yj-6Oa" secondAttribute="trailing" constant="-20" id="ZbZ-ps-uH2"/>
                             <constraint firstItem="LHJ-yj-6Oa" firstAttribute="top" secondItem="Bif-dJ-eeg" secondAttribute="bottom" constant="8" id="l2Y-qk-tsL"/>
                             <constraint firstItem="LHJ-yj-6Oa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="mls-Vu-rkG"/>
@@ -110,7 +113,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="956" y="225"/>
+            <point key="canvasLocation" x="956" y="224.4377811094453"/>
         </scene>
         <!--Light Control View Controller-->
         <scene sceneID="Wh6-2N-ue3">
@@ -124,8 +127,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ghG-EV-FEp">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ghG-EV-FEp">
                                 <rect key="frame" x="163" y="119" width="51" height="31"/>
+                                <connections>
+                                    <action selector="lightSwitchDidChange:" destination="niK-HG-Igu" eventType="valueChanged" id="Jvx-po-fbd"/>
+                                </connections>
                             </switch>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ebC-xB-H0P" customClass="ChromaColorPicker" customModule="ChromaColorPicker">
                                 <rect key="frame" x="67" y="213" width="240" height="240"/>
@@ -173,17 +179,19 @@
                             <constraint firstItem="ghG-EV-FEp" firstAttribute="centerX" secondItem="zcT-yW-W73" secondAttribute="centerX" id="HvM-Fl-MSr"/>
                             <constraint firstItem="ghG-EV-FEp" firstAttribute="top" secondItem="JmV-Un-KqC" secondAttribute="bottom" constant="55" id="IJ8-pI-6rD"/>
                             <constraint firstAttribute="trailingMargin" secondItem="bA3-BE-ZFY" secondAttribute="trailing" constant="51.5" id="bQe-sf-2LI"/>
-                            <constraint firstItem="bA3-BE-ZFY" firstAttribute="top" secondItem="ebC-xB-H0P" secondAttribute="bottom" constant="77" id="d9R-bx-LXf"/>
                             <constraint firstItem="ebC-xB-H0P" firstAttribute="top" secondItem="ghG-EV-FEp" secondAttribute="bottom" constant="63" id="ePv-te-sFq"/>
                             <constraint firstItem="bA3-BE-ZFY" firstAttribute="leading" secondItem="TNo-1F-i29" secondAttribute="trailing" constant="8.5" id="f6S-aF-stQ"/>
                             <constraint firstItem="ebC-xB-H0P" firstAttribute="centerY" secondItem="zcT-yW-W73" secondAttribute="centerY" id="f7B-7t-ApF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ebC-xB-H0P" secondAttribute="trailing" constant="52" id="nrm-fq-DHl"/>
                             <constraint firstItem="ebC-xB-H0P" firstAttribute="leading" secondItem="zcT-yW-W73" secondAttribute="leadingMargin" constant="51" id="v0c-Tz-Foh"/>
                             <constraint firstItem="ebC-xB-H0P" firstAttribute="centerX" secondItem="zcT-yW-W73" secondAttribute="centerX" id="xSB-7C-TPw"/>
+                            <constraint firstItem="TNo-1F-i29" firstAttribute="centerY" secondItem="bA3-BE-ZFY" secondAttribute="centerY" id="xnX-FZ-0lP"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="colorPicker" destination="ebC-xB-H0P" id="nN3-0I-7ql"/>
+                        <outlet property="lightImageView" destination="TNo-1F-i29" id="0gJ-5P-qUD"/>
+                        <outlet property="lightSwitch" destination="ghG-EV-FEp" id="04v-7a-JOI"/>
                         <outlet property="stepSlider" destination="bA3-BE-ZFY" id="GmL-d4-mD3"/>
                     </connections>
                 </viewController>

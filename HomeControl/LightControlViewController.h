@@ -14,5 +14,10 @@
 
 @property (weak, nonatomic) IBOutlet ChromaColorPicker *colorPicker;
 @property (weak, nonatomic) IBOutlet StepSlider *stepSlider;
+@property (weak, nonatomic) IBOutlet UISwitch *lightSwitch;
+@property (weak, nonatomic) IBOutlet UIImageView *lightImageView;
+
+
+@property (strong, nonatomic) NSString *deviceAddress;
 
 @end

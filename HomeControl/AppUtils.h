@@ -30,4 +30,6 @@ extern NSString *const K_DEVICE_ADDED_NOTIFICATION;
 
 + (DeviceStoreStatus) isDeviceAlreadySaved:(NSDictionary *)device;
 
++ (UIColor *) colorWithHexString: (NSString *) hexString;
+
 @end

@@ -21,6 +21,7 @@
 @interface DeviceListViewController (){
     NSArray *services;
     BOOL isBluetoothOn;
+    UIColor *collectionViewTintColor;
 }
 
 @property (strong, nonatomic) ConnectionSelectViewController *connectionSelectVC;
@@ -33,10 +34,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    /* Nav bar title */
+    UILabel *titleView = [[UILabel alloc] init];
+    titleView.text = @"HomeControl";
+    titleView.textColor = [AppUtils colorWithHexString:@"545677"];//310A31
+    titleView.font = [UIFont fontWithName:@"Sacramento-Regular" size:34.0];
+    [titleView sizeToFit];
+    self.navigationItem.titleView = titleView;
+    
+    // Style
+    self.view.backgroundColor = self.collectionView.backgroundColor = [AppUtils colorWithHexString:@"#29272f"];
+    self.navigationController.navigationBar.barTintColor = [AppUtils colorWithHexString:@"#7EF98C"];//[AppUtils colorWithHexString:@"#FFC857"];
+    self.navigationController.navigationBar.translucent = NO;
+    collectionViewTintColor = [AppUtils colorWithHexString:@"#7EF98C"];
+    self.segmentedControl.tintColor = [AppUtils colorWithHexString:@"#7EF98C"];
+    
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
-    
-    self.view.backgroundColor = self.collectionView.backgroundColor;
     
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     services = @[[CBUUID UUIDWithString:LightServiceUUID_LOWER],[CBUUID UUIDWithString:LightServiceUUID_UPPER]];
@@ -143,18 +157,23 @@
 {
     DeviceListCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addDeviceCell" forIndexPath:indexPath];
     
+    
     if([self.savedDevices count] == 0){
         if(indexPath.row == 0){
             cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
             cell.deviceTitleLabel.text = @"";
             cell.isAddCell = YES;
             cell.hidden = NO;
+            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.deviceImageView setTintColor:collectionViewTintColor];
         }
         else{
             cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
             cell.deviceTitleLabel.text = @"";
             cell.isAddCell = NO;
             cell.hidden = YES;
+            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.deviceImageView setTintColor:collectionViewTintColor];
         }
     }
     else{
@@ -164,12 +183,16 @@
             cell.deviceTitleLabel.text = device[@"deviceServiceName"];
             cell.isAddCell = NO;
             cell.hidden = NO;
+            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.deviceImageView setTintColor:collectionViewTintColor];
         }
         else{
             cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
             cell.deviceTitleLabel.text = @"";
             cell.isAddCell = YES;
             cell.hidden = NO;
+            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.deviceImageView setTintColor:collectionViewTintColor];
         }
     }
     
@@ -205,6 +228,8 @@
     }
     else{
         LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
+        NSDictionary *device = self.savedDevices[indexPath.row];
+        lcvc.deviceAddress = device[@"deviceAddress"];
         [self.navigationController pushViewController:lcvc animated:YES];
     }
 }
