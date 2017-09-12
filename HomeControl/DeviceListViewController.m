@@ -11,6 +11,7 @@
 #import "ConnectionSelectViewController.h"
 #import "MZFormSheetPresentationViewController.h"
 #import "LightControlViewController.h"
+#import "Reachability.h"
 #import "AppUtils.h"
 
 //#define LightServiceUUID @"1e0ca4ea-299d-4335-93eb-27fcfe7fa848"
@@ -57,6 +58,28 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self fetchSavedDevices];
+    
+    // Monitor device's reachability so that its not shown when its off.
+    for(NSMutableDictionary *device in self.savedDevices){
+        Reachability* reach = [Reachability reachabilityWithHostname:[NSString stringWithFormat:@"http://%@:8080/NightLight",device[@"deviceAddress"]]];
+        reach.reachableBlock = ^(Reachability*reach)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                device[@"isReachable"] = @YES;
+                [self.collectionView reloadData];
+            });
+        };
+        
+        reach.unreachableBlock = ^(Reachability*reach)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                device[@"isReachable"] = @YES;//TODO: CHange this
+                [self.collectionView reloadData];
+            });
+        };
+
+        [reach startNotifier];
+    }
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -69,8 +92,29 @@
 - (void) didReceiveDeviceAddedNotification
 {
     [self fetchSavedDevices];
+    
+    // Monitor device's reachability so that its not shown when its off.
+    NSMutableDictionary *device = [self.savedDevices lastObject];
+    Reachability* reach = [Reachability reachabilityWithHostname:[NSString stringWithFormat:@"http://%@",device[@"deviceAddress"]]];
+    reach.reachableBlock = ^(Reachability*reach)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            device[@"isReachable"] = @YES;
+            [self.collectionView reloadData];
+        });
+    };
+    
+    reach.unreachableBlock = ^(Reachability*reach)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            device[@"isReachable"] = @YES;// TODO: Change this
+            [self.collectionView reloadData];
+        });
+    };
+    
+    [reach startNotifier];
 }
-     
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -127,9 +171,15 @@
 - (void) fetchSavedDevices
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    self.savedDevices = [defaults arrayForKey:K_SAVED_DEVICE_STORE];
-    if(!self.savedDevices){
-        self.savedDevices = [NSMutableArray new];
+    NSArray *retreivedDevices = [defaults arrayForKey:K_SAVED_DEVICE_STORE];
+    if(!retreivedDevices){
+        retreivedDevices = [NSMutableArray new];
+    }
+    
+    // Convert to mutable dictionary
+    self.savedDevices = [NSMutableArray new];
+    for(int i = 0; i < [retreivedDevices count]; i++){
+        self.savedDevices[i] = [NSMutableDictionary dictionaryWithDictionary:retreivedDevices[i]];
     }
     
     [self.collectionView reloadData];
@@ -156,6 +206,7 @@
                            cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     DeviceListCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addDeviceCell" forIndexPath:indexPath];
+    cell.activatedCellColor = collectionViewTintColor;
     
     
     if([self.savedDevices count] == 0){
@@ -185,6 +236,7 @@
             cell.hidden = NO;
             cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             [cell.deviceImageView setTintColor:collectionViewTintColor];
+            [cell setCellAsDeactivated:![device[@"isReachable"] boolValue]];
         }
         else{
             cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
@@ -227,10 +279,16 @@
         [self presentViewController:formSheetController animated:YES completion:nil];
     }
     else{
-        LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
         NSDictionary *device = self.savedDevices[indexPath.row];
-        lcvc.deviceAddress = device[@"deviceAddress"];
-        [self.navigationController pushViewController:lcvc animated:YES];
+        
+        if([device[@"isReachable"] boolValue] == YES){
+            LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
+            lcvc.deviceAddress = device[@"deviceAddress"];
+            [self.navigationController pushViewController:lcvc animated:YES];
+        }
+        else{
+            [AppUtils showAlertWithTitle:@"HomeControl" body:@"That device is currently unavailable. Please ensure that it is powered on" inViewController:self];
+        }
     }
 }
 

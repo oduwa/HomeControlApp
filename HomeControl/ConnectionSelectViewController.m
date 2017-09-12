@@ -81,9 +81,9 @@
         
         // Save address if necessary
         NSDictionary *peripheralDict = self.discoveredPeripherals[selectedIndexPath.row];
-        NSDictionary *newDevice = @{@"deviceName":peripheral.name,
-                                    @"deviceServiceName":[peripheralDict allKeys][0],
-                                    @"deviceAddress":addr};
+        NSMutableDictionary *newDevice = [NSMutableDictionary dictionaryWithDictionary:@{@"deviceName":peripheral.name,
+                                                                                         @"deviceServiceName":[peripheralDict allKeys][0],
+                                                                                         @"deviceAddress":addr}];
         
         DeviceStoreStatus status = [AppUtils isDeviceAlreadySaved:newDevice];
         

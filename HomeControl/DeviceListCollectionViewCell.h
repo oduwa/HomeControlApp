@@ -15,5 +15,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *deviceTitleLabel;
 
 @property (assign, nonatomic) BOOL isAddCell;
+@property (strong, nonatomic) UIColor *activatedCellColor;
+@property (strong, nonatomic) UIColor *deactivatedCellColor;
+
+- (void) setCellAsDeactivated:(BOOL)isDeactivated;
 
 @end

@@ -28,7 +28,7 @@ NSString *const K_DEVICE_ADDED_NOTIFICATION = @"DEVICE_ADDED_NOTIFICATION";
                         tag:(NSInteger)tag
            inViewController:(UIViewController *)vc
 {
-    UIAlertView *alert =[[UIAlertView alloc] initWithTitle:title message:message delegate:vc cancelButtonTitle:NSLocalizedString(@"BtnTitle_OK", nil) otherButtonTitles:nil];
+    UIAlertView *alert =[[UIAlertView alloc] initWithTitle:title message:message delegate:vc cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.tag = tag;
     [alert show];
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C18AD901F673B3000F42A7E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18AD8F1F673B3000F42A7E /* Reachability.m */; };
+		4C18AD921F673B3C00F42A7E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C18AD911F673B3C00F42A7E /* SystemConfiguration.framework */; };
 		4C506D851F64BF5F009ADB6F /* ConnectionSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C506D841F64BF5F009ADB6F /* ConnectionSelectViewController.m */; };
 		4C506D881F64C47A009ADB6F /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C506D871F64C47A009ADB6F /* AppUtils.m */; };
 		4C506D8C1F64D759009ADB6F /* light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C506D891F64D759009ADB6F /* light_on@2x.png */; };
@@ -46,6 +48,9 @@
 /* Begin PBXFileReference section */
 		2235985ED8908FBAE5C0E95A /* Pods-HomeControl.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeControl.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeControl/Pods-HomeControl.release.xcconfig"; sourceTree = "<group>"; };
 		31DB89C6573C7B641421EFE3 /* Pods-HomeControl.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeControl.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeControl/Pods-HomeControl.debug.xcconfig"; sourceTree = "<group>"; };
+		4C18AD8E1F673B3000F42A7E /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		4C18AD8F1F673B3000F42A7E /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		4C18AD911F673B3C00F42A7E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		4C506D831F64BF5F009ADB6F /* ConnectionSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionSelectViewController.h; sourceTree = "<group>"; };
 		4C506D841F64BF5F009ADB6F /* ConnectionSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionSelectViewController.m; sourceTree = "<group>"; };
 		4C506D861F64C47A009ADB6F /* AppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUtils.h; sourceTree = "<group>"; };
@@ -107,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C18AD921F673B3C00F42A7E /* SystemConfiguration.framework in Frameworks */,
 				4CD4DDF51F63714E008EC271 /* QuartzCore.framework in Frameworks */,
 				4CD4DDF31F63702A008EC271 /* CoreBluetooth.framework in Frameworks */,
 				5A674C6766A8A33C78FE526A /* Pods_HomeControl.framework in Frameworks */,
@@ -128,14 +134,25 @@
 		3A4F9A87494E1CB0B6097A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C18AD911F673B3C00F42A7E /* SystemConfiguration.framework */,
 				F1ECABD65A54353FD2F6AB63 /* Pods_HomeControl.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4C18AD8D1F673B3000F42A7E /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				4C18AD8E1F673B3000F42A7E /* Reachability.h */,
+				4C18AD8F1F673B3000F42A7E /* Reachability.m */,
+			);
+			path = Reachability;
+			sourceTree = "<group>";
+		};
 		4CBA757F1F65669400518754 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4C18AD8D1F673B3000F42A7E /* Reachability */,
 				4CBA75801F65669400518754 /* AFNetworking */,
 			);
 			path = Libraries;
@@ -400,6 +417,7 @@
 				4CBA759A1F65669400518754 /* AFURLRequestSerialization.m in Sources */,
 				4CD4DDE51F63656B008EC271 /* DeviceListCollectionViewCell.m in Sources */,
 				4CBA759C1F65669400518754 /* AFURLSessionManager.m in Sources */,
+				4C18AD901F673B3000F42A7E /* Reachability.m in Sources */,
 				4CD4DDE11F6364BD008EC271 /* DeviceListViewController.m in Sources */,
 				4CBA75951F65669400518754 /* AFHTTPRequestOperationManager.m in Sources */,
 				4CD4DDD01F636468008EC271 /* ViewController.m in Sources */,
