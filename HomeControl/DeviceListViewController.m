@@ -11,6 +11,7 @@
 #import "ConnectionSelectViewController.h"
 #import "MZFormSheetPresentationViewController.h"
 #import "LightControlViewController.h"
+#import "AFNetworking.h"
 #import "Reachability.h"
 #import "AppUtils.h"
 
@@ -56,30 +57,17 @@
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     services = @[[CBUUID UUIDWithString:LightServiceUUID_LOWER],[CBUUID UUIDWithString:LightServiceUUID_UPPER]];
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    [self fetchSavedDevices];
     
-    // Monitor device's reachability so that its not shown when its off.
-    for(NSMutableDictionary *device in self.savedDevices){
-        Reachability* reach = [Reachability reachabilityWithHostname:[NSString stringWithFormat:@"http://%@:8080/NightLight",device[@"deviceAddress"]]];
-        reach.reachableBlock = ^(Reachability*reach)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                device[@"isReachable"] = @YES;
-                [self.collectionView reloadData];
-            });
-        };
-        
-        reach.unreachableBlock = ^(Reachability*reach)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                device[@"isReachable"] = @YES;//TODO: CHange this
-                [self.collectionView reloadData];
-            });
-        };
-
-        [reach startNotifier];
-    }
+    // Pull to refresh
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.collectionView.alwaysBounceVertical = YES;
+    self.refreshControl = [UIRefreshControl new];
+    self.refreshControl.tintColor = collectionViewTintColor;
+    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [self.collectionView addSubview:self.refreshControl];
+    
+    // Content
+    [self refresh];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -87,6 +75,43 @@
     [super viewDidAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDeviceAddedNotification) name:K_DEVICE_ADDED_NOTIFICATION object:nil];
+}
+
+
+# pragma mark - Actions
+
+- (void) refresh
+{
+    [self fetchSavedDevices];
+    
+    // Monitor device's reachability so that its not shown when its off.
+    __block int numberFinished = 0;
+    for(NSMutableDictionary *device in self.savedDevices){
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+        NSString *urlString = [NSString stringWithFormat:@"http://%@/",device[@"deviceAddress"]];
+        [manager POST:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                device[@"isReachable"] = @YES;
+                [self.collectionView reloadData];
+                numberFinished++;
+                if(numberFinished == self.savedDevices.count){
+                    [self.refreshControl endRefreshing];
+                }
+            });
+        } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                device[@"isReachable"] = @NO;
+                [self.collectionView reloadData];
+                numberFinished++;
+                if(numberFinished == self.savedDevices.count){
+                    [self.refreshControl endRefreshing];
+                }
+            });
+        }];
+    }
 }
 
 - (void) didReceiveDeviceAddedNotification
