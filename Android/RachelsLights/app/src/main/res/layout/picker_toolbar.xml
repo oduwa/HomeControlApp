@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:elevation="6dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/picker"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_reset" />
+
+        <ImageButton
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_check" />
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/app_name"
+            android:onClick="closeBox"
+            android:src="@drawable/ic_cancel"
+            android:tint="@android:color/black" />
+    </LinearLayout>
+</FrameLayout>

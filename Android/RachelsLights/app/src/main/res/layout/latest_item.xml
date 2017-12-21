@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/latest_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/app_name"
+    android:elevation="1dp"
+    android:foreground="@drawable/ripple"
+    android:orientation="vertical"
+    android:scaleX="0.85"
+    android:scaleY="0.85" />

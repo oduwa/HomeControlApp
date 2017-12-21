@@ -18,6 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.odie.rachelslights.colorbox.ColorBoxActivity"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"/>
+
     </application>
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>

@@ -3,4 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="selectors_offset">4dp</dimen>
+    <dimen name="colors_offset">2dp</dimen>
 </resources>

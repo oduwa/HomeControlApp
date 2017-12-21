@@ -2,6 +2,7 @@ package com.odie.rachelslights;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,7 +28,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.GridView;
+
+import com.odie.rachelslights.colorbox.ColorBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +40,12 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = MainActivity.class.getSimpleName();
+
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mDevices;
     private boolean mScanning;
+    private boolean mIsChoosingColor;
     private Handler mHandler;
     private BluetoothLeScanner mLEScanner;
     private ScanSettings settings;
@@ -100,7 +107,21 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                 1);
+
         mGridView = (GridView) findViewById(R.id.gridview);
+        final Activity context = this;
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ColorBox.showColorBox(TAG, context);
+                mIsChoosingColor = true;
+            }
+        });
+
+        ArrayList x = new ArrayList();
+        x.add("Test");
+        mGridView.setAdapter(new DeviceListAdapter(this, x));
+
 
         mHandler = new Handler();
         mDevices = new ArrayList<>();
@@ -145,6 +166,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if(mIsChoosingColor) {
+            int color = ColorBox.getColor(TAG, this);
+            Log.d(TAG, "xxx." + color);
+            mIsChoosingColor = false;
+        }
 
     }
 
