@@ -7,7 +7,11 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
@@ -41,6 +45,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    public static final ArrayList<BluetoothGattService> discovered_services = new ArrayList<>();
 
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mDevices;
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             };
 
     private ScanCallback mScanCallback = new ScanCallback() {
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             Log.d("callbackType", String.valueOf(callbackType));
@@ -95,6 +101,43 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onScanFailed(int errorCode) {
             Log.e("Scan Failed", "Error Code: " + errorCode);
+        }
+    };
+
+    private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            Log.i("onConnectionStateChange", "Status: " + status);
+            switch (newState) {
+                case BluetoothProfile.STATE_CONNECTED:
+                    Log.i("gattCallback", "STATE_CONNECTED");
+                    discovered_services.clear();
+                    gatt.discoverServices();
+                    break;
+                case BluetoothProfile.STATE_DISCONNECTED:
+                    Log.e("gattCallback", "STATE_DISCONNECTED");
+                    break;
+                default:
+                    Log.e("gattCallback", "STATE_OTHER");
+            }
+
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            List<BluetoothGattService> services = gatt.getServices();
+            discovered_services.addAll(services);
+            Log.i("onServicesDiscovered", services.toString());
+            gatt.readCharacteristic(services.get(1).getCharacteristics().get
+                    (0));
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt,
+                                         BluetoothGattCharacteristic
+                                                 characteristic, int status) {
+            Log.i("onCharacteristicRead", characteristic.toString());
+            gatt.disconnect();
         }
     };
 
@@ -182,6 +225,10 @@ public class MainActivity extends AppCompatActivity {
         mDialog.setCancelable(false);
         mDialog.show();
 
+        if(mGatt != null){
+            mGatt.disconnect();
+        }
+
         // Handler to stop scanning after set period
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -207,6 +254,10 @@ public class MainActivity extends AppCompatActivity {
                     // Create the AlertDialog object and return it
                     builder.create().show();
                 }
+                else{
+                    // Connect to first discovered device
+                    mGatt = mDevices.get(0).connectGatt(context, false, gattCallback);
+                }
             }
         }, SCAN_PERIOD);
 
@@ -224,6 +275,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    public void writeCharacteristic(){
+        //BluetoothGattCharacteristic
     }
 
     @Override
