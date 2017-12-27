@@ -37,6 +37,7 @@ import android.widget.GridView;
 
 import com.odie.rachelslights.colorbox.ColorBox;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final ArrayList<BluetoothGattService> discovered_services = new ArrayList<>();
+
+    private final String LIGHT_SERVICE_UUID = "ff51b30e-d7e2-4d93-8842-a7c4a57dfb07";
+    private final String ADDRESS_CHARACTERISTIC_UUID = "ff51b30e-d7e2-4d93-8842-a7c4a57dfb09";
+    private final String LIGHT_COMMAND_CHARACTERISTIC_UUID = "ff51b30e-d7e2-4d93-8842-a7c4a57dfb10";
 
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mDevices;
@@ -115,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     gatt.discoverServices();
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:
+                    discovered_services.clear();
                     Log.e("gattCallback", "STATE_DISCONNECTED");
                     break;
                 default:
@@ -128,16 +134,6 @@ public class MainActivity extends AppCompatActivity {
             List<BluetoothGattService> services = gatt.getServices();
             discovered_services.addAll(services);
             Log.i("onServicesDiscovered", services.toString());
-            gatt.readCharacteristic(services.get(1).getCharacteristics().get
-                    (0));
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic
-                                                 characteristic, int status) {
-            Log.i("onCharacteristicRead", characteristic.toString());
-            gatt.disconnect();
         }
     };
 
@@ -156,14 +152,30 @@ public class MainActivity extends AppCompatActivity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ColorBox.showColorBox(TAG, context);
-                mIsChoosingColor = true;
+                if(discovered_services.size() > 0){
+                    ColorBox.showColorBox(TAG, context);
+                    mIsChoosingColor = true;
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Hold up snugglepuss, your phone's not connected to the light yet. Maybe give it a couple more seconds.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // FIRE ZE MISSILES!
+                                }
+                            });
+                    // Create the AlertDialog object and return it
+                    builder.create().show();
+                }
             }
         });
 
+        /* FOR TEST PURPOSES ONLY */
+        /*
         ArrayList x = new ArrayList();
         x.add("Test");
         mGridView.setAdapter(new DeviceListAdapter(this, x));
+        */
 
 
         mHandler = new Handler();
@@ -211,10 +223,21 @@ public class MainActivity extends AppCompatActivity {
 
         if(mIsChoosingColor) {
             int color = ColorBox.getColor(TAG, this);
-            Log.d(TAG, "xxx." + color);
+            Log.d(TAG, "xxx." + colourEncodingForBTDevice(color));
+            writeCharacteristic(colourEncodingForBTDevice(color));
             mIsChoosingColor = false;
         }
 
+    }
+
+    public String colourEncodingForBTDevice(int color){
+        int A = (color >> 24) & 0xff;
+        int R = (color >> 16) & 0xff;
+        int G = (color >>  8) & 0xff;
+        int B = (color      ) & 0xff;
+        A = (int) ((A/255.0)*10);
+
+        return String.format("%1$04d|%2$04d|%3$04d|%4$04d", R, G, B, A);
     }
 
     public void searchBLE(){
@@ -277,8 +300,31 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    public void writeCharacteristic(){
-        //BluetoothGattCharacteristic
+    public boolean writeCharacteristic(String msg){
+        //check mBluetoothGatt is available
+        if (mGatt == null) {
+            Log.e(TAG, "Not connected to device");
+            return false;
+        }
+
+        BluetoothGattService lightService = mGatt.getService(UUID.fromString(LIGHT_SERVICE_UUID));
+
+        if (lightService == null) {
+            Log.e(TAG, "Light service not found!");
+            return false;
+        }
+
+        BluetoothGattCharacteristic characteristic = lightService.getCharacteristic(UUID.fromString(LIGHT_COMMAND_CHARACTERISTIC_UUID));
+        if (characteristic == null) {
+            Log.e(TAG, "Write characteristic not found!");
+            return false;
+        }
+
+        byte[] bMsg = msg.getBytes(Charset.forName("UTF-8"));
+        characteristic.setValue(bMsg);
+        mGatt.writeCharacteristic(characteristic);
+
+        return true;
     }
 
     @Override
