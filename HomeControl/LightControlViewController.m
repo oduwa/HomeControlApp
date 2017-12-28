@@ -26,6 +26,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    // TODO: ON VIEW LOAD, READ INITIAL CONTROL VALUES FROM BT DEVICE
+    
     /* Nav bar title */
     UILabel *titleView = [[UILabel alloc] init];
     titleView.text = @"HomeControl";
@@ -63,7 +65,7 @@
     r = 255.0;
     g = 255.0;
     b = 255.0;
-    brightness = 6.0/10.0;
+    brightness = 6.0;
     mode = @"on";
     // TODO: Check whats in vars.txt and set defaults
 }
@@ -82,14 +84,14 @@
 
 - (IBAction)lightSwitchDidChange:(id)sender
 {
-    if(self.lightSwitch.isOn){
-        mode = @"default";
-        [self sliderDidChangeValue];
-    }
-    else{
-        brightness = 0;
-        [self updateLight];
-    }
+//    if(self.lightSwitch.isOn){
+//        mode = @"default";
+//        [self sliderDidChangeValue];
+//    }
+//    else{
+//        brightness = 0;
+//        [self updateLight];
+//    }
 }
 
 - (void) colorPickerDidChangeColor
@@ -114,35 +116,23 @@
     
     NSLog(@"Selected Colour: (%f,%f,%f)", r,g,b);
     
-    if(self.lightSwitch.isOn){
-        [self updateLight];
-    }
+    [self updateLight];
 }
 
 - (void) sliderDidChangeValue
 {
     NSLog(@"Slider value: %lu", self.stepSlider.index+1);
-    brightness = (float) (self.stepSlider.index+1)/10.0;
+    brightness = (float) (self.stepSlider.index+1);
     
-    if(self.lightSwitch.isOn){
-        [self updateLight];
-    }
+    [self updateLight];
 }
 
 - (void) updateLight
 {
     /* Upload file */
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-    NSString *urlString = [NSString stringWithFormat:@"http://%@/NightLight/nightlight.php?r=%d&g=%d&b=%d&mode=%@&brightness=%.1f", self.deviceAddress, (int)r, (int)g, (int)b, @"default", brightness];
-    NSLog(@"REQUEST: %@", urlString);
-    [manager POST:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        NSLog(@"Sent POST update with response:\n %@", responseString);
-    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+    NSString *msg = [NSString stringWithFormat:@"%04d|%04d|%04d|%04d", (int)r, (int)g, (int)b, (int)brightness];
+    NSLog(@"%@", msg);
+    [self.periphal writeValue:[msg dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithoutResponse];
 }
 
 /*

@@ -27,6 +27,8 @@ extern NSString *const K_DEVICE_ADDED_NOTIFICATION;
            inViewController:(UIViewController *)vc;
 
 + (BOOL) isUUIDInServiceList:(CBUUID *)uuid;
++ (BOOL) isUUIDReadCharacteristic:(CBUUID *)uuid;
++ (BOOL) isUUIDWriteCharacteristic:(CBUUID *)uuid;
 
 + (DeviceStoreStatus) isDeviceAlreadySaved:(NSDictionary *)device;
 

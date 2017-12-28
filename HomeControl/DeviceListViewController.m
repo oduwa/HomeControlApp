@@ -16,14 +16,16 @@
 #import "AppUtils.h"
 
 //#define LightServiceUUID @"1e0ca4ea-299d-4335-93eb-27fcfe7fa848"
-#define LightServiceUUID_LOWER @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb07"
-#define LightServiceUUID_UPPER @"FF51B30E-D7E2-4D93-8842-A7C4A57DFB09"
+#define LIGHT_SERVICE_UUID @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb07"
 
 
 @interface DeviceListViewController (){
     NSArray *services;
     BOOL isBluetoothOn;
     UIColor *collectionViewTintColor;
+    CBPeripheral *currentlySelectedPeripheral;
+    CBCharacteristic *writeCharacteristic;
+    CBCharacteristic *readCharacteristic;
 }
 
 @property (strong, nonatomic) ConnectionSelectViewController *connectionSelectVC;
@@ -35,6 +37,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.discoveredPeripherals = [NSMutableArray new];
     
     /* Nav bar title */
     UILabel *titleView = [[UILabel alloc] init];
@@ -55,7 +59,7 @@
     self.collectionView.delegate = self;
     
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-    services = @[[CBUUID UUIDWithString:LightServiceUUID_LOWER],[CBUUID UUIDWithString:LightServiceUUID_UPPER]];
+    services = @[[CBUUID UUIDWithString:LIGHT_SERVICE_UUID]];
     
     
     // Pull to refresh
@@ -67,7 +71,7 @@
     [self.collectionView addSubview:self.refreshControl];
     
     // Content
-    [self refresh];
+    [self.centralManager scanForPeripheralsWithServices:services options:nil];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -75,6 +79,14 @@
     [super viewDidAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDeviceAddedNotification) name:K_DEVICE_ADDED_NOTIFICATION object:nil];
+    
+    /* Make sure that this VC is the delegate for all its discovered peripherals */
+    for(CBPeripheral *peripheral in self.discoveredPeripherals){
+        peripheral.delegate = self;
+    }
+    readCharacteristic = nil;
+    writeCharacteristic = nil;
+    if(currentlySelectedPeripheral) [self.centralManager cancelPeripheralConnection:currentlySelectedPeripheral];
 }
 
 
@@ -82,63 +94,57 @@
 
 - (void) refresh
 {
-    [self fetchSavedDevices];
+//    [self fetchSavedDevices];
+//
+//    // Monitor device's reachability so that its not shown when its off.
+//    __block int numberFinished = 0;
+//    for(NSMutableDictionary *device in self.savedDevices){
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//        manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+//        NSString *urlString = [NSString stringWithFormat:@"http://%@/",device[@"deviceAddress"]];
+//        [manager POST:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//            NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                device[@"isReachable"] = @YES;
+//                [self.collectionView reloadData];
+//                numberFinished++;
+//                if(numberFinished == self.savedDevices.count){
+//                    [self.refreshControl endRefreshing];
+//                }
+//            });
+//        } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                device[@"isReachable"] = @NO;
+//                [self.collectionView reloadData];
+//                numberFinished++;
+//                if(numberFinished == self.savedDevices.count){
+//                    [self.refreshControl endRefreshing];
+//                }
+//            });
+//        }];
+//    }
     
-    // Monitor device's reachability so that its not shown when its off.
-    __block int numberFinished = 0;
-    for(NSMutableDictionary *device in self.savedDevices){
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-        NSString *urlString = [NSString stringWithFormat:@"http://%@/",device[@"deviceAddress"]];
-        [manager POST:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                device[@"isReachable"] = @YES;
-                [self.collectionView reloadData];
-                numberFinished++;
-                if(numberFinished == self.savedDevices.count){
-                    [self.refreshControl endRefreshing];
-                }
-            });
-        } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                device[@"isReachable"] = @NO;
-                [self.collectionView reloadData];
-                numberFinished++;
-                if(numberFinished == self.savedDevices.count){
-                    [self.refreshControl endRefreshing];
-                }
-            });
-        }];
+    self.discoveredPeripherals = [NSMutableArray new];
+    
+    if(isBluetoothOn){
+        [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    }
+    else{
+        [AppUtils showAlertWithTitle:@"HomeControl" body:@"An error occured. Please ensure that bluetooth is on" inViewController:self];
     }
 }
 
-- (void) didReceiveDeviceAddedNotification
+- (void) transitionToLightControlVC
 {
-    [self fetchSavedDevices];
-    
-    // Monitor device's reachability so that its not shown when its off.
-    NSMutableDictionary *device = [self.savedDevices lastObject];
-    Reachability* reach = [Reachability reachabilityWithHostname:[NSString stringWithFormat:@"http://%@",device[@"deviceAddress"]]];
-    reach.reachableBlock = ^(Reachability*reach)
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            device[@"isReachable"] = @YES;
-            [self.collectionView reloadData];
-        });
-    };
-    
-    reach.unreachableBlock = ^(Reachability*reach)
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            device[@"isReachable"] = @YES;// TODO: Change this
-            [self.collectionView reloadData];
-        });
-    };
-    
-    [reach startNotifier];
+    LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
+    lcvc.periphal = currentlySelectedPeripheral;
+    lcvc.writeCharacteristic = writeCharacteristic;
+    lcvc.readCharacteristic = readCharacteristic;
+    lcvc.periphal.delegate = lcvc;
+    [self.navigationController pushViewController:lcvc animated:YES];
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -155,16 +161,20 @@
     NSLog(@"%@", result);
 }
 
-// CBCentralManagerDelegate - This is called with the CBPeripheral class as its main input parameter. This contains most of the informat ion there is to know about a BLE peripheral.
+// CBCentralManagerDelegate - This is called with the CBPeripheral class as its main input parameter. This contains most of the information there is to know about a BLE peripheral.
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
     NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
-    if ([localName length] > 0) {
+    if ([localName length] > 0 && [localName containsString:@"HomeControl"]) {
         NSLog(@"Found BLuetooth Peripheral: %@", localName);
         [self.centralManager stopScan];
-        [self.connectionSelectVC addDiscoveredPeripheral:peripheral withLocalName:localName];
-        // TODO: Dont stop scan. Discover all peripherals with required service for a specified time
+        // TODO: DONT STOP SCAN HERE. STOP TIMER AFTER A SPECIFIED TIME LIKE IN ANDROID
+        //[self.connectionSelectVC addDiscoveredPeripheral:peripheral withLocalName:localName];
         self.peripheral = peripheral;
+        [self.discoveredPeripherals addObject:peripheral];
+        peripheral.delegate = self;
+        [self.collectionView reloadData];
+        [self.refreshControl endRefreshing];
     }
 }
 
@@ -191,24 +201,45 @@
 }
 
 
+#pragma mark - CBPeripheralDelegate
+
+// CBPeripheralDelegate - Invoked when you discover the peripheral's available services.
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
+{
+    for (CBService *service in peripheral.services) {
+        NSLog(@"Discovered service: %@", service.UUID);
+        [peripheral discoverCharacteristics:nil forService:service];
+    }
+}
+
+// Invoked when you discover the characteristics of a specified service.
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
+{
+    // Check if peripheral has a supported service
+    if([AppUtils isUUIDInServiceList:service.UUID])  {
+        for (CBCharacteristic *aChar in service.characteristics)
+        {
+            if([AppUtils isUUIDReadCharacteristic:aChar.UUID]) {
+                readCharacteristic = aChar;
+            }
+            
+            if([AppUtils isUUIDWriteCharacteristic:aChar.UUID]) {
+                writeCharacteristic = aChar;
+                [self transitionToLightControlVC];
+            }
+        }
+    }
+}
+
+// Invoked when you retrieve a specified characteristic's value, or when the peripheral device notifies your app that the characteristic's value has changed.
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+
+}
+
+
 # pragma mark - Helper
 
-- (void) fetchSavedDevices
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *retreivedDevices = [defaults arrayForKey:K_SAVED_DEVICE_STORE];
-    if(!retreivedDevices){
-        retreivedDevices = [NSMutableArray new];
-    }
-    
-    // Convert to mutable dictionary
-    self.savedDevices = [NSMutableArray new];
-    for(int i = 0; i < [retreivedDevices count]; i++){
-        self.savedDevices[i] = [NSMutableDictionary dictionaryWithDictionary:retreivedDevices[i]];
-    }
-    
-    [self.collectionView reloadData];
-}
 
 # pragma mark - UICollectionView DataSource
 
@@ -219,11 +250,11 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if([self.savedDevices count] == 0){
-        return [self.savedDevices count]+1+1;
+    if([self.discoveredPeripherals count] == 0){
+        return 1;
     }
     else{
-        return [self.savedDevices count]+1;
+        return [self.discoveredPeripherals count];
     }
 }
 
@@ -234,7 +265,7 @@
     cell.activatedCellColor = collectionViewTintColor;
     
     
-    if([self.savedDevices count] == 0){
+    if([self.discoveredPeripherals count] == 0){
         if(indexPath.row == 0){
             cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
             cell.deviceTitleLabel.text = @"";
@@ -243,34 +274,15 @@
             cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             [cell.deviceImageView setTintColor:collectionViewTintColor];
         }
-        else{
-            cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
-            cell.deviceTitleLabel.text = @"";
-            cell.isAddCell = NO;
-            cell.hidden = YES;
-            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            [cell.deviceImageView setTintColor:collectionViewTintColor];
-        }
     }
     else{
-        if(indexPath.row < [self.savedDevices count]){
-            NSDictionary *device = self.savedDevices[indexPath.row];
-            cell.deviceImageView.image = [UIImage imageNamed:@"light_on"];
-            cell.deviceTitleLabel.text = device[@"deviceServiceName"];
-            cell.isAddCell = NO;
-            cell.hidden = NO;
-            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            [cell.deviceImageView setTintColor:collectionViewTintColor];
-            [cell setCellAsDeactivated:![device[@"isReachable"] boolValue]];
-        }
-        else{
-            cell.deviceImageView.image = [UIImage imageNamed:@"plus_math"];
-            cell.deviceTitleLabel.text = @"";
-            cell.isAddCell = YES;
-            cell.hidden = NO;
-            cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            [cell.deviceImageView setTintColor:collectionViewTintColor];
-        }
+        CBPeripheral *peripheral = self.discoveredPeripherals[indexPath.row];
+        cell.deviceImageView.image = [UIImage imageNamed:@"light_on"];
+        cell.deviceTitleLabel.text = peripheral.name;
+        cell.isAddCell = NO;
+        cell.hidden = NO;
+        cell.deviceImageView.image = [cell.deviceImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [cell.deviceImageView setTintColor:collectionViewTintColor];
     }
     
     
@@ -286,34 +298,33 @@
     DeviceListCollectionViewCell *cell = [self collectionView:self.collectionView cellForItemAtIndexPath:indexPath];
     
     if(cell.isAddCell){
-        if(isBluetoothOn){
-            [self.centralManager scanForPeripheralsWithServices:services options:nil];
-        }
-        else{
-            [AppUtils showAlertWithTitle:@"HomeControl" body:@"An error occured. Please ensure that bluetooth is on" inViewController:self];
-        }
+        [self refresh];
         
-        self.connectionSelectVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ConnectionSelectViewController"];
-        self.connectionSelectVC.discoveredPeripherals = [NSMutableArray new];
-        self.connectionSelectVC.centralManager = self.centralManager;
-        MZFormSheetPresentationViewController *formSheetController = [[MZFormSheetPresentationViewController alloc] initWithContentViewController:self.connectionSelectVC];
-        formSheetController.presentationController.contentViewSize = CGSizeMake(250, 250); // or pass in UILayoutFittingCompressedSize to size automatically with auto-layout
-        formSheetController.presentationController.shouldDismissOnBackgroundViewTap = YES;
-        formSheetController.presentationController.shouldCenterVertically = YES;
-        formSheetController.presentationController.shouldApplyBackgroundBlurEffect = YES;
-        [self presentViewController:formSheetController animated:YES completion:nil];
+//        self.connectionSelectVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ConnectionSelectViewController"];
+//        self.connectionSelectVC.discoveredPeripherals = [NSMutableArray new];
+//        self.connectionSelectVC.centralManager = self.centralManager;
+//        MZFormSheetPresentationViewController *formSheetController = [[MZFormSheetPresentationViewController alloc] initWithContentViewController:self.connectionSelectVC];
+//        formSheetController.presentationController.contentViewSize = CGSizeMake(250, 250); // or pass in UILayoutFittingCompressedSize to size automatically with auto-layout
+//        formSheetController.presentationController.shouldDismissOnBackgroundViewTap = YES;
+//        formSheetController.presentationController.shouldCenterVertically = YES;
+//        formSheetController.presentationController.shouldApplyBackgroundBlurEffect = YES;
+//        [self presentViewController:formSheetController animated:YES completion:nil];
     }
     else{
-        NSDictionary *device = self.savedDevices[indexPath.row];
+//        NSDictionary *device = self.savedDevices[indexPath.row];
+//
+//        if([device[@"isReachable"] boolValue] == YES){
+//            LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
+//            lcvc.deviceAddress = device[@"deviceAddress"];
+//            [self.navigationController pushViewController:lcvc animated:YES];
+//        }
+//        else{
+//            [AppUtils showAlertWithTitle:@"HomeControl" body:@"That device is currently unavailable. Please ensure that it is powered on" inViewController:self];
+//        }
         
-        if([device[@"isReachable"] boolValue] == YES){
-            LightControlViewController *lcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"LightControlViewController"];
-            lcvc.deviceAddress = device[@"deviceAddress"];
-            [self.navigationController pushViewController:lcvc animated:YES];
-        }
-        else{
-            [AppUtils showAlertWithTitle:@"HomeControl" body:@"That device is currently unavailable. Please ensure that it is powered on" inViewController:self];
-        }
+        CBPeripheral *peripheral = self.discoveredPeripherals[indexPath.row];
+        currentlySelectedPeripheral = peripheral;
+        [self.centralManager connectPeripheral:peripheral options:nil];
     }
 }
 

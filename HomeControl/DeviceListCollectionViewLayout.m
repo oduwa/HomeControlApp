@@ -66,6 +66,7 @@
         
         xOffset = xOffset+itemSize.width+_itemOffset.horizontal;
         column++;
+        contentWidth = xOffset;
         
         // Create a new row if this was the last column
         if (column == numberOfColumnsInRow)

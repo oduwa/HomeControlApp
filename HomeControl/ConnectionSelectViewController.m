@@ -62,9 +62,14 @@
         for (CBCharacteristic *aChar in service.characteristics)
         {
             // Request device address
-            if([AppUtils isUUIDInServiceList:aChar.UUID]) {
-                [peripheral readValueForCharacteristic:aChar];
-                NSLog(@"Found body sensor location characteristic");
+            if([AppUtils isUUIDReadCharacteristic:aChar.UUID]) {
+                //[peripheral readValueForCharacteristic:aChar];
+            }
+            
+            if([AppUtils isUUIDWriteCharacteristic:aChar.UUID]) {
+                //[peripheral readValueForCharacteristic:aChar];
+                NSString *str = @"hello";
+                [peripheral writeValue:[str dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:aChar type:CBCharacteristicWriteWithoutResponse];
             }
         }
     }
@@ -74,7 +79,7 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
     // Updated value for heart rate measurement received
-    if([AppUtils isUUIDInServiceList:characteristic.UUID]) {
+    if([AppUtils isUUIDReadCharacteristic:characteristic.UUID]) {
         // Get the device address
         NSString *addr = [self getDeviceAddressFromCharacteristic:characteristic];;
         NSLog(@"Found device ip address: %@", addr);

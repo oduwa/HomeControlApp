@@ -20,4 +20,6 @@
 @property (nonatomic, strong) CBPeripheral *peripheral;
 @property (nonatomic, strong) NSMutableArray *savedDevices;
 
+@property (nonatomic, strong) NSMutableArray<CBPeripheral *> *discoveredPeripherals;
+
 @end

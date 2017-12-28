@@ -8,8 +8,13 @@
 
 #import "AppUtils.h"
 
-#define LightServiceUUID_LOWER @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb07"
-#define LightServiceUUID_UPPER @"FF51B30E-D7E2-4D93-8842-A7C4A57DFB09"
+//#define LightServiceUUID_LOWER @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb07"
+//#define LightServiceUUID_UPPER @"FF51B30E-D7E2-4D93-8842-A7C4A57DFB09"
+
+#define LIGHT_SERVICE_UUID_LOWER @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb07"
+#define LIGHT_SERVICE_UUID_UPPER @"FF51B30E-D7E2-4D93-8842-A7C4A57DFB07"
+#define ADDRESS_CHARACTERISTIC_UUID @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb09"
+#define LIGHT_COMMAND_CHARACTERISTIC_UUID @"ff51b30e-d7e2-4d93-8842-a7c4a57dfb10"
 
 @implementation AppUtils
 
@@ -35,7 +40,33 @@ NSString *const K_DEVICE_ADDED_NOTIFICATION = @"DEVICE_ADDED_NOTIFICATION";
 
 + (BOOL) isUUIDInServiceList:(CBUUID *)uuid
 {
-    NSArray *services = @[[CBUUID UUIDWithString:LightServiceUUID_LOWER],[CBUUID UUIDWithString:LightServiceUUID_UPPER]];
+    NSArray *services = @[[CBUUID UUIDWithString:LIGHT_SERVICE_UUID_LOWER],[CBUUID UUIDWithString:LIGHT_SERVICE_UUID_UPPER]];
+    
+    for(CBUUID *servUuid in services){
+        if([uuid isEqual:servUuid]){
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
++ (BOOL) isUUIDReadCharacteristic:(CBUUID *)uuid
+{
+    NSArray *services = @[[CBUUID UUIDWithString:ADDRESS_CHARACTERISTIC_UUID]];
+    
+    for(CBUUID *servUuid in services){
+        if([uuid isEqual:servUuid]){
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
++ (BOOL) isUUIDWriteCharacteristic:(CBUUID *)uuid
+{
+    NSArray *services = @[[CBUUID UUIDWithString:LIGHT_COMMAND_CHARACTERISTIC_UUID]];
     
     for(CBUUID *servUuid in services){
         if([uuid isEqual:servUuid]){
